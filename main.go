@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"flag"
+	"fmt"
 	"log"
 	"os"
 	"os/signal"
@@ -11,15 +12,17 @@ import (
 	"gopkg.in/Graylog2/go-gelf.v2/gelf"
 )
 
-var address = flag.String("address", "127.0.0.1:12201", "address to listen on")
+var port = flag.Int("address", 12201, "port to listen on")
 
 func main() {
 	flag.Parse()
 
-	reader, err := gelf.NewReader(*address)
+	reader, err := gelf.NewReader(fmt.Sprintf(":%d", *port))
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	log.Printf("listen on %s", reader.Addr())
 
 	go func() {
 		for {
